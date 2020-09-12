@@ -1,0 +1,27 @@
+{% extends "movie/base_search_results.html" %}
+
+{% block category-zh %}演员{% endblock %}
+
+{% block actor-search %}selected="selected"{% endblock %}
+
+{% block content %}
+{{ block.super }}
+{% for actor in page_obj %}
+{% if forloop.first %}
+<div class="list-group">
+{% endif %}
+    <a href="{% url 'movie:actor_detail' actor.id %}" class="list-group-item list-group-item-action flex-column align-items-start">
+        <div class="media">
+            <img class="mr-3" src="{{ actor.photo_url|default:'https://img9.doubanio.com/f/movie/8dd0c794499fe925ae2ae89ee30cd225750457b4/pics/movie/celebrity-default-medium.png' }}" style="max-height: 96px">
+            <div class="media-body">
+                <h5 class="mt-0">{{ actor.name }}</h5>
+            </div>
+        </div>
+    </a>
+{% if forloop.last %}
+</div>
+{% endif %}
+{% empty %}
+    <p class="bg-warning">未找到匹配结果</p>
+{% endfor %}
+{% endblock %}

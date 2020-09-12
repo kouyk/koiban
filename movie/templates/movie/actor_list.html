@@ -1,0 +1,36 @@
+{% extends "movie/base.html" %}
+
+{% block title %}演员列表{% endblock %}
+
+{% block actor-active %} active{% endblock %}
+
+{% block actor-search %}selected="selected"{% endblock %}
+
+{% block content %}
+{% for actor in actors %}
+{% if forloop.first %}
+<div class="row">
+    <div class="card-group">
+{% endif %}
+        <div class="col">
+            <div class="card">
+                <a href="{% url 'movie:actor_detail' actor.id %}">
+                    <img class="card-img-top" src="{{ actor.photo_url|default:'https://img9.doubanio.com/f/movie/8dd0c794499fe925ae2ae89ee30cd225750457b4/pics/movie/celebrity-default-medium.png' }}" alt="{{ actor.name }}照片">
+                </a>
+                <div class="card-body">
+                    <a href="{% url 'movie:actor_detail' actor.id %}"><h6 class="card-title">{{ actor.name }}</h6></a>
+                </div>
+            </div>
+        </div>
+    {% if forloop.counter|divisibleby:'5' %}
+    </div>
+    <div class="card-group">
+    {% endif %}
+{% if forloop.last %}
+    </div>
+</div>
+{% endif %}
+{% empty %}
+<p>没有演员信息</p>
+{% endfor %}
+{% endblock %}

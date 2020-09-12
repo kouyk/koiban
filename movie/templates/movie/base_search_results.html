@@ -1,0 +1,9 @@
+{% extends "movie/base.html" %}
+
+{% block title %}{{ query }} - {% block category-zh %}{% endblock %} - 搜索结果{% endblock %}
+
+{% block current_query %}{{ query }}{% endblock %}
+
+{% block content %}
+    <small class="text-muted">相关结果共{{ total_count }}个，搜索条目共{{ total }}个，搜索花费时间是{{ time_taken }}秒</small>
+{% endblock %}

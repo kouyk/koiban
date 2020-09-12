@@ -1,0 +1,26 @@
+{% extends "movie/base_search_results.html" %}
+
+{% block category-zh %}演员{% endblock %}
+
+{% block comment-search %}selected="selected"{% endblock %}
+
+{% block content %}
+{{ block.super }}
+{% for comment in page_obj %}
+{% if forloop.first %}
+<div class="list-group">
+{% endif %}
+    <a href="{% url 'movie:film_detail' comment.film.id %}" class="list-group-item list-group-item-action flex-column align-items-start">
+        <div class="d-flex w-100 justify-content-between">
+            <h5 class="mb-1">{{ comment.username }}</h5>
+            <small>{{ comment.film.short_title }}</small>
+        </div>
+        <p class="mb-1">{{ comment.text }}</p>
+    </a>
+{% if forloop.last %}
+</div>
+{% endif %}
+{% empty %}
+    <p class="bg-warning">未找到匹配结果</p>
+{% endfor %}
+{% endblock %}

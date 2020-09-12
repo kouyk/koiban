@@ -1,0 +1,65 @@
+{% extends "movie/base.html" %}
+
+{% block title %}{{ film.full_title }}{% endblock %}
+
+{% block film-active %} active{% endblock %}
+
+{% block content %}
+<div style="text-align: center;"><h1>{{ film.full_title }} {{ film.year }}</h1></div>
+<div class="row">
+    <div class="col-lg-3 d-flex">
+        <div class="card card-body flex-fill">
+            <img class="card-img" src="{{ film.cover_url}}" alt="{{ film.short_title }}海报">
+        </div>
+    </div>
+    <div class="col-lg-9 d-flex">
+        <div class="card card-body flex-fill">
+            {% if film.directors|length > 0 %}<span>导演: {{ film.directors }}</span>{% endif %}
+            {% if film.screenwriters|length > 0 %}<span>编剧: {{ film.screenwriters }}</span>{% endif %}
+            {% if film.genre|length > 0 %}<span>类型: {{ film.genre }}</span>{% endif %}
+            {% if film.official_site|length > 0 %}<span>官方网站: {{ film.official_site }}</span>{% endif %}
+            {% if film.prod_region|length > 0 %}<span>制片国家/地区: {{ film.prod_region }}</span>{% endif %}
+            {% if film.language|length > 0 %}<span>语言: {{ film.language }}</span>{% endif %}
+            {% if film.premiere_dates|length > 0 %}<span>上映日期: {{ film.premiere_dates }}</span>{% endif %}
+            {% if film.length|length > 0 %}<span>片长: {{ film.length }}</span>{% endif %}
+            {% if film.alt_titles|length > 0 %}<span>又名: {{ film.alt_titles }}</span>{% endif %}
+            {% if film.imdb|length > 0 %}<span>IMDb链接: <a href="https://www.imdb.com/title/{{ film.imdb }}">{{ film.imdb }}</a></span>{% endif %}
+        </div>
+    </div>
+</div>
+{% for actor in film.actor_set.all %}
+{% if forloop.first %}
+<h3 class="mt-4">主演:</h3>
+<div class="row">
+    <div class="card-group">
+{% endif %}
+        <div class="card">
+            <a href="{% url 'movie:actor_detail' actor.id %}">
+                <img class="card-img-top" src="{{ actor.photo_url|default:'https://img9.doubanio.com/f/movie/8dd0c794499fe925ae2ae89ee30cd225750457b4/pics/movie/celebrity-default-medium.png' }}" alt="{{ actor.name }}照片">
+            </a>
+            <div class="card-body">
+                <a href="{% url 'movie:actor_detail' actor.id %}"><h6 class="card-title">{{ actor.name }}</h6></a>
+            </div>
+        </div>
+    {% if forloop.counter|divisibleby:'6' %}
+    </div>
+    <div class="card-group">
+    {% endif %}
+{% if forloop.last %}
+    </div>
+</div>
+{% endif %}
+{% endfor %}
+<h3 class="mt-4">影评:</h3>
+{% for comment in film.comment_set.all %}
+    {% if forloop.first %}
+    <ul class="list-group list-group-flush">
+    {% endif %}
+        <li class="list-group-item"><i>{{ comment.username }}:<br></i> {{ comment.text }}</li>
+    {% empty %}
+    <p>没有任何影评</p>
+    {% if forloop.last %}
+    </ul>
+    {% endif %}
+{% endfor %}
+{% endblock %}

@@ -1,0 +1,86 @@
+{% extends "movie/base.html" %}
+
+{% block title %}{{ actor.name }}{% endblock %}
+
+{% block actor-active %} active{% endblock %}
+
+{% block actor-search %}selected="selected"{% endblock %}
+
+{% block content %}
+<div style="text-align: center;"><h1>{% if actor.fullname|length > 0 %}{{ actor.fullname }}{% else %}{{ actor.name }}{% endif %}</h1></div>
+<div class="row">
+    <div class="col-lg-3 d-flex">
+        <div class="card card-body flex-fill">
+            <img class="card-img" src="{{ actor.photo_url|default:'https://img9.doubanio.com/f/movie/8dd0c794499fe925ae2ae89ee30cd225750457b4/pics/movie/celebrity-default-medium.png' }}" alt="{{ actor.name }}照片">
+        </div>
+    </div>
+    <div class="col-lg-9 d-flex">
+        <div class="card card-body flex-fill">
+            {% if actor.fullname|length == 0 %}<span>没有演员详细资料</span>{% endif %}
+            {% if actor.sex|length > 0 %}<span>性别: {{ actor.sex }}</span>{% endif %}
+            {% if actor.horoscope|length > 0 %}<span>星座: {{ actor.horoscope }}</span>{% endif %}
+            {% if actor.birth_date|length > 0 %}<span>出生日期: {{ actor.birth_date }}</span>{% endif %}
+            {% if actor.birth_place|length > 0 %}<span>出生地: {{ actor.birth_place }}</span>{% endif %}
+            {% if actor.careers|length > 0 %}<span>职业: {{ actor.careers }}</span>{% endif %}
+            {% if actor.other_names|length > 0 %}<span>更多外文名: {{ actor.other_names }}</span>{% endif %}
+            {% if actor.alt_zh_names|length > 0 %}<span>更多中文名: {{ actor.alt_zh_names }}</span>{% endif %}
+            {% if actor.family|length > 0 %}<span>家庭成员: {{ actor.family }}</span>{% endif %}
+            {% if actor.imdb|length > 0 %}<span>IMDb编号: <a href="https://www.imdb.com/name/{{ actor.imdb }}">{{ actor.imdb }}</a></span>{% endif %}
+            {% if actor.website_url|length > 0 %}<span>官方网站: <a href="{{ actor.website_url }}">{{ actor.website_url }}</a></span>{% endif %}
+        </div>
+    </div>
+</div>
+{% if actor.introduction|length > 0 %}
+<div class="card mt-5">
+<h3>影人简介</h3>
+<p>{{ actor.introduction }}</p>
+</div>
+{% endif %}
+<h3 class="mt-5">参演影视:</h3>
+{% for film in actor.films.all %}
+{% if forloop.first %}
+<div class="row">
+    <div class="card-group">
+{% endif %}
+        <div class="card">
+            <a href="{% url 'movie:film_detail' film.id %}"><img class="card-img-top" src="{{ film.cover_url}}" alt="{{ film.short_title }} cover"></a>
+            <div class="card-body">
+                <a href="{% url 'movie:film_detail' film.id %}"><h6 class="card-title">{{ film.short_title|title }}</h6></a>
+                <p class="card-text"><small class="text-muted">{{ film.rating }}</small></p>
+            </div>
+        </div>
+    {% if forloop.counter|divisibleby:'6' %}
+    </div>
+    <div class="card-group">
+    {% endif %}
+{% if forloop.last %}
+    </div>
+</div>
+{% endif %}
+{% empty %}
+<p>没有相关作品</p>
+{% endfor %}
+<h3 class="mt-5">合作演员:</h3>
+{% for partner in view.get_screen_partners %}
+{% if forloop.first %}
+<div class="row">
+    <div class="card-group">
+{% endif %}
+        <div class="card">
+            <a href="{% url 'movie:actor_detail' partner.partner_id %}"><img class="card-img-top" src="{{ partner.photo_url|default:'https://img9.doubanio.com/f/movie/8dd0c794499fe925ae2ae89ee30cd225750457b4/pics/movie/celebrity-default-medium.png' }}" alt="{{ partner.name }} photo"></a>
+            <div class="card-body">
+                <a href="{% url 'movie:actor_detail' partner.partner_id %}"><h6 class="card-title">{{ partner.name }} ({{ partner.count }})</h6></a>
+            </div>
+        </div>
+    {% if forloop.counter|divisibleby:'6' %}
+    </div>
+    <div class="card-group">
+    {% endif %}
+{% if forloop.last %}
+    </div>
+</div>
+{% endif %}
+{% empty %}
+<p>没有合作演员信息</p>
+{% endfor %}
+{% endblock %}
